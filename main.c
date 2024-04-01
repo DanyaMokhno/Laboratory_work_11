@@ -4,7 +4,11 @@
 typedef union IPv4
 {
     unsigned short address[4];
-    unsigned short class: 8;
+    struct
+    {
+        int : 6;
+        int class: 2;
+    };
 } IPv4;
 
 void get_ip(IPv4 *ip)
@@ -24,8 +28,8 @@ void change_class_of_ip(IPv4 *ip)
 //    printf("-----------------------------\n");
 //    short_to_bin(ip->class);
 //    putchar('\n');
-    ip->class = ip->class ^ (1 << 7);
-    if ((ip->class & ((1 << 6)))) ip->class = ip->class & (~(1 << 6));
+    ip->class = ip->class ^ (1 << 0x1);
+    if ((ip->class & 0b10)) ip->class = ip->class & 0b10;
 //    printf("%d\n", ip->class);
 //    short_to_bin(ip->class);
 //    putchar('\n');
