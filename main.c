@@ -3,7 +3,7 @@
 
 typedef union IPv4
 {
-    unsigned short address[4];
+    u_int8_t address[4];
     struct
     {
         int : 6;
@@ -14,35 +14,28 @@ typedef union IPv4
 void get_ip(IPv4 *ip)
 {
     printf("input ip address\n");
-    scanf("%hd.%hd.%hd.%hd", &(ip->address[0]), &(ip->address[1]), &(ip->address[2]), &(ip->address[3]));
+    scanf("%hhu.%hhu.%hhu.%hhu", &(ip->address[0]), &(ip->address[1]), &(ip->address[2]), &(ip->address[3]));
 }
 
-void short_to_bin(unsigned short b)
+void show_bin(u_int8_t address)
 {
     int i;
-    for (i = 7; i >= 0; i--) printf("%d", (b >> i) & (0x1));
+    for (i = 7; i >= 0; i--) printf("%d", (address >> i) & (0x1));
 }
 
 void change_class_of_ip(IPv4 *ip)
 {
-//    printf("-----------------------------\n");
-//    short_to_bin(ip->class);
-//    putchar('\n');
-    ip->class = ip->class ^ (1 << 0x1);
-    if ((ip->class & 0b10)) ip->class = ip->class & 0b10;
-//    printf("%d\n", ip->class);
-//    short_to_bin(ip->class);
-//    putchar('\n');
-//    printf("-----------------------------\n");
+    ip->class = ip->class ^ 0b10;
+    if (ip->class & 0b10) ip->class = ip->class & 0b10;
 }
 
 void show_ip(IPv4 *ip)
 {
     int i;
-    printf("%hd.%hd.%hd.%hd\n", ip->address[0], ip->address[1], ip->address[2], ip->address[3]);
+    printf("%hhu.%hhu.%hhu.%hhu\n", ip->address[0], ip->address[1], ip->address[2], ip->address[3]);
     for (i = 0; i < 4; i++)
     {
-        short_to_bin(ip->address[i]);
+        show_bin(ip->address[i]);
         putchar('.');
     }
     putchar(8);
@@ -55,8 +48,10 @@ int main()
 
     ip = malloc(sizeof(IPv4));
     get_ip(ip);
+    puts("original ip:");
     show_ip(ip);
     change_class_of_ip(ip);
+    puts("converted ip:");
     show_ip(ip);
     free(ip);
 
