@@ -11,10 +11,19 @@ typedef union IPv4
     };
 } IPv4;
 
-void get_ip(IPv4 *ip)
+int get_ip(IPv4 *ip)
 {
+    int i;
+    int address[4];
+    int complete;
     printf("input ip address\n");
-    scanf("%hhu.%hhu.%hhu.%hhu", &(ip->address[0]), &(ip->address[1]), &(ip->address[2]), &(ip->address[3]));
+    scanf("%d.%d.%d.%d", &(address[0]), &(address[1]), &(address[2]), &(address[3]));
+    complete = 1;
+    for (i = 0; i < 4; i++)
+        if (address[i] < 256)
+            ip->address[i] = address[i];
+        else complete = 0;
+    return complete;
 }
 
 void show_bin(u_int8_t address)
@@ -45,16 +54,20 @@ void show_ip(IPv4 *ip)
 int main()
 {
     IPv4 *ip;
+    int complete;
 
     ip = malloc(sizeof(IPv4));
-    get_ip(ip);
-    puts("original ip:");
-    show_ip(ip);
-    change_class_of_ip(ip);
-    puts("converted ip:");
-    show_ip(ip);
+    complete = get_ip(ip);
+    if (!complete) printf("ip address incorrect");
+    else
+    {
+        puts("original ip:");
+        show_ip(ip);
+        change_class_of_ip(ip);
+        puts("converted ip:");
+        show_ip(ip);
+    }
     free(ip);
-
     return 0;
 }
 /*
